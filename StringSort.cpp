@@ -1,12 +1,13 @@
 /*
- * Describe:先对两个字符串进行sort，然后再进行比较,时间复杂度为O(nlgn + mlogm + m + n)
+ * Describe:先对两个字符串进行sort，然后再进行比较,
+ * 这里排序使用了两种方法，一种是快排，一种是计数排序
  * author: andrewRong
  * */
 
 #include <string>
 #include <cassert>
 #include <iostream>
-
+#include <cstring>
 using namespace std;
 void Swap(char& left,char& right)
 {
@@ -46,13 +47,40 @@ void QuickSort(string& str, int low,int high)
     }
 }
 
+void CountSort(const string& str,string& sortedString)
+{
+    int help[26] = {0};
+
+    memset(help,0,26 * sizeof(int));
+
+    for(int i = 0; i < static_cast<int>(str.length()); i++)
+    {
+	char tmp = str[i] - 'A';
+	help[static_cast<int>(tmp)]++;
+    }
+
+    for(int i = 1; i < 26; i++)
+    {
+	help[i] = help[i] + help[i - 1];
+    }
+
+    for(int i = 0; i < static_cast<int>(str.length()); i++)
+    {
+	int tmp = help[static_cast<int>(str[i] - 'A')] - 1;
+	sortedString[tmp] = str[i];
+	help[static_cast<int>(str[i] - 'A')]--;
+    }
+}
+
 //一个注意点就是i与j不是同时进行++操作的，因为有短string可能有重复的字符出现的
 bool StringContain(string longString,string shortString)
 {
-    QuickSort(longString,0,longString.length() - 1); 
-    QuickSort(shortString,0,shortString.length() - 1); 
-    
-    cout<<longString<<" "<<shortString<<endl;
+    string tmpLongString = longString;
+    string tmpShortString = shortString;
+
+    CountSort(tmpLongString,longString);
+    CountSort(tmpShortString,shortString);
+
     
     int i = 0;
     int j = 0;
