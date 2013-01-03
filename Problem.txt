@@ -1,0 +1,2 @@
+Describe:
+    有一个长的string和一个短的string，想出一种方法能知道短string中有的字符在长的string中都有；
